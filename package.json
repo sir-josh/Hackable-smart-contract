@@ -1,0 +1,27 @@
+{
+  "name": "vending-machine",
+  "version": "1.0.0",
+  "description": "A simple smart contract that models after a vending machine",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sir-josh/Hackable-smart-contract.git"
+  },
+  "keywords": [
+    "smart",
+    "contract",
+    "hackable",
+    "solidity",
+    "test",
+    "contract"
+  ],
+  "author": "SIR JOSH",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sir-josh/Hackable-smart-contract/issues"
+  },
+  "homepage": "https://github.com/sir-josh/Hackable-smart-contract#readme"
+}
