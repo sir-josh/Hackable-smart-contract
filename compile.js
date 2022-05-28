@@ -6,7 +6,25 @@ const solc = require('solc');
 const VendingMachine_Path = path.resolve(__dirname, 'contracts', 'VendingMachine.sol'); 
 
 //Read-in the content of smart contract source code
-const sourceCode = fs.readFileSync(VendingMachine_Path, 'utf-8');
+const sourceCode = fs.readFileSync(VendingMachine_Path, 'utf8');
+
+
+//The expected JSON formatted input, specifying the language, sources and outputSelection
+const input = {
+    language: 'Solidity',
+    sources: {
+        'VendingMachine.sol': {
+            content: sourceCode,
+        }
+    },
+    settings: {
+        outputSelection: {
+            '*': {
+                '*': ['*']
+            }
+        }
+    }
+};
 
 //Compile sourceCode
-console.log(solc.compile(sourceCode, 1));
+module.exports = JSON.parse(solc.compile(JSON.stringify(input))).contracts['VendingMachine.sol'].VendingMachine;
