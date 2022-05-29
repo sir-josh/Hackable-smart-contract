@@ -4,7 +4,7 @@
   "description": "A simple smart contract that models after a vending machine",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
