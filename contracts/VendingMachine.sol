@@ -88,6 +88,13 @@ contract VendingMachine {
     }
 
     /**
+     * @dev Returns the amount the owner deposited to the contract as reserve.
+     */
+    function getReserveAmount() public view onlyOwner returns (uint256){
+        return reserve;
+    }
+
+    /**
      * @dev Deposits are made to the contract before any interaction with it.
      * Only valid when the contract hasn't been hacked.
      */
