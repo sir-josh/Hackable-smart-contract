@@ -30,4 +30,10 @@ describe('Vending Machine Contract satisfies the following tests: ', () =>{
     it('It deploys a contract', ()=> {
         assert.ok(vendingMachine.options.address);
     });
+
+    
+    it('It has a default ether reserve balance in the contract', async() => {
+        const reserve = await vendingMachine.methods.getReserveAmount().call({ from: accounts[0] });
+        assert.equal(web3.utils.toWei('1', 'ether'), reserve);
+    });
 });
