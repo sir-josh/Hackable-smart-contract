@@ -64,4 +64,18 @@ describe('Vending Machine Contract satisfies the following tests: ', () =>{
         assert.equal(web3.utils.toWei('0.22', 'ether'), amountDepositedBy2);
         assert.equal(web3.utils.toWei('0.3', 'ether'), amountDepositedBy3);
     });
+
+    it('It allows a user to deposit and buy peanuts', async() => {
+        await vendingMachine.methods.deposit().send({ 
+            from: accounts[1], 
+            value: web3.utils.toWei('0.8', 'ether')
+        });
+        
+        const amountDeposited = await vendingMachine.methods.consumersDeposit(accounts[1]).call();
+        await vendingMachine.methods.getPeanuts(2).send({ from: accounts[1] });        
+        const peanutsBought = await vendingMachine.methods.peanuts(accounts[1]).call();
+
+        assert.equal(web3.utils.toWei('0.8', 'ether'), amountDeposited);
+        assert.equal(2, peanutsBought);
+    });
 });
