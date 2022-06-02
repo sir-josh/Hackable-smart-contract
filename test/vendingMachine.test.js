@@ -36,4 +36,14 @@ describe('Vending Machine Contract satisfies the following tests: ', () =>{
         const reserve = await vendingMachine.methods.getReserveAmount().call({ from: accounts[0] });
         assert.equal(web3.utils.toWei('1', 'ether'), reserve);
     });
+
+    it('It allow a user to deposit at least minimum amount', async()=> {
+        await vendingMachine.methods.deposit().send({ 
+            from: accounts[1], 
+            value: web3.utils.toWei('0.1', 'ether')
+        });
+
+        const amountDeposited = await vendingMachine.methods.consumersDeposit(accounts[1]).call();
+        assert.equal(web3.utils.toWei('0.1', 'ether'), amountDeposited);
+    });
 });
