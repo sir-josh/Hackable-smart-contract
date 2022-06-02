@@ -9,6 +9,7 @@ const { abi , evm } = require('../compile');
 //provided by ganache test network
 let accounts, vendingMachine;
 
+
 beforeEach(async()=> {
     //Get a list of all accounts
     accounts = await web3.eth.getAccounts();
@@ -78,4 +79,27 @@ describe('Vending Machine Contract satisfies the following tests: ', () =>{
         assert.equal(web3.utils.toWei('0.8', 'ether'), amountDeposited);
         assert.equal(2, peanutsBought);
     });
+
+    it('It allows a user to deposit, buy peanuts and withdraw balance if any', async() => {
+        await vendingMachine.methods.deposit().send({ 
+            from: accounts[1], 
+            value: web3.utils.toWei('1', 'ether')
+        }); 
+        const amountDeposited = await vendingMachine.methods.consumersDeposit(accounts[1]).call();
+
+        await vendingMachine.methods.getPeanuts(8).send({ from: accounts[1] });        
+        const peanutsBought = await vendingMachine.methods.peanuts(accounts[1]).call();
+        const balanceAfterPurchase = await vendingMachine.methods.consumersDeposit(accounts[1]).call();
+
+        await vendingMachine.methods.withdrawal().send({ from: accounts[1] }); 
+        const balanceAfterWithdrawal = await vendingMachine.methods.consumersDeposit(accounts[1]).call();
+
+        assert.equal(web3.utils.toWei('1', 'ether'), amountDeposited);
+        assert.equal(8, peanutsBought);
+        //Amount remaining after purchase = 1 ether - (0.1 * 8)ether = 0.2 ether
+        assert.equal(web3.utils.toWei('0.2', 'ether'), balanceAfterPurchase);
+        assert.equal(0, balanceAfterWithdrawal);
+
+    });
+    
 });
