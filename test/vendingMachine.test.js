@@ -38,6 +38,22 @@ describe('Vending Machine Contract satisfies the following tests: ', () =>{
         assert.equal(web3.utils.toWei('1', 'ether'), reserve);
     });
 
+    it('Doesn\'t allow a user to deposit below minimum amount', async()=> {
+        try {
+            await vendingMachine.methods.deposit().send({ 
+                from: accounts[1], 
+                value: web3.utils.toWei('0.01', 'ether')    // less than 0.1 ether minimum deposit requirement; the test should
+                                                            // pass because it asserts for error in the catch block
+            });            
+        } catch (error) {
+            assert(error);
+            return;
+        }
+
+        assert(false);
+    });
+
+
     it('Allow a user to deposit at least minimum amount', async()=> {
         const amountToDeposit = web3.utils.toWei('0.1', 'ether');
 
