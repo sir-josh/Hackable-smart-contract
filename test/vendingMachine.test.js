@@ -5,8 +5,10 @@ const web3 = new Web3(ganache.provider());
 const { abi , evm } = require('../compile');
 
 
-//Declare accounts variable that will holds list of all accounts 
-//provided by ganache test network
+/**
+ *  @var { string}  - (accounts) To holds list of all accounts provided by ganache test network
+ *  @var {String} - (vendingMachine) The deployed vending machine smart contract instance
+ */
 let accounts, vendingMachine;
 
 
@@ -28,16 +30,18 @@ beforeEach(async()=> {
 });
 
 describe('Vending Machine Contract satisfies the following tests: ', () =>{
+    //Test for deployment of the contract
     it('Deploys a contract', ()=> {
         assert.ok(vendingMachine.options.address);
     });
 
-    
+    //Test for default ether amount as reserve in the smart contract
     it('Has a default ether reserve balance in the contract', async() => {
         const reserve = await vendingMachine.methods.getReserveAmount().call({ from: accounts[0] });
         assert.equal(web3.utils.toWei('1', 'ether'), reserve);
     });
 
+    //Test to see if contract allows a user to deposit below minimum amount needed
     it('Doesn\'t allow a user to deposit below minimum amount', async()=> {
         try {
             await vendingMachine.methods.deposit().send({ 
@@ -54,7 +58,8 @@ describe('Vending Machine Contract satisfies the following tests: ', () =>{
     });
 
 
-    it('Allow a user to deposit at least minimum amount', async()=> {
+    //Test to see if it allows a user to deposit at least the minimum amount
+    it('Allows a user to deposit at least minimum amount', async()=> {
         const amountToDeposit = web3.utils.toWei('0.1', 'ether');
 
         await vendingMachine.methods.deposit().send({ 
@@ -66,6 +71,8 @@ describe('Vending Machine Contract satisfies the following tests: ', () =>{
         assert.equal(amountToDeposit, amountDeposited);
     });
 
+
+    //Test for multiple users deposit
     it('Allow multiple users to deposit at least minimum amount', async()=> {
         const amountToDepositby2 =  web3.utils.toWei('0.22', 'ether');
         const amountToDepositby3 =  web3.utils.toWei('0.3', 'ether');
@@ -87,6 +94,8 @@ describe('Vending Machine Contract satisfies the following tests: ', () =>{
         assert.equal(amountToDepositby3, amountDepositedBy3);
     });
 
+
+    //Test to see if user can deposit and buy
     it('Allows a user to deposit and buy peanuts', async() => {
         const amountToDeposit = web3.utils.toWei('0.8', 'ether');
 
@@ -103,6 +112,8 @@ describe('Vending Machine Contract satisfies the following tests: ', () =>{
         assert.equal(2, peanutsBought);
     });
 
+
+    //Test to see if user can deposit, buy and withdrawal any balance left
     it('Allows a user to deposit, buy peanuts and withdraw balance if any', async() => {
         const amountToDeposit = web3.utils.toWei('1', 'ether');
         const pricePerPeanut = web3.utils.toWei('0.1', 'ether');
@@ -131,6 +142,7 @@ describe('Vending Machine Contract satisfies the following tests: ', () =>{
     });
     
     
+    //Test to see if it allows the owner of the contract to restock product
     it('Allows only owner to restock peanuts', async () => {
         const owner = accounts[0];
 
@@ -145,6 +157,7 @@ describe('Vending Machine Contract satisfies the following tests: ', () =>{
     });
 
     
+    //Test to see if it allows users other than the owner to restock product
     it('Denies others to restock peanuts except the owner', async() => {
         try {
             await vendingMachine.methods.restockPeanuts(10).send({ 
