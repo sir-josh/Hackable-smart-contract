@@ -154,7 +154,7 @@ contract VendingMachine {
      * Can only be called by the current owner.
      */
     function restockPeanuts(uint256 _restockAmount) public onlyOwner{
-        peanuts[msg.sender] += _restockAmount;
+        peanuts[address(this)] += _restockAmount;
     }
 
 }

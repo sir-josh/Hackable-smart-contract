@@ -28,78 +28,103 @@ beforeEach(async()=> {
 });
 
 describe('Vending Machine Contract satisfies the following tests: ', () =>{
-    it('It deploys a contract', ()=> {
+    it('Deploys a contract', ()=> {
         assert.ok(vendingMachine.options.address);
     });
 
     
-    it('It has a default ether reserve balance in the contract', async() => {
+    it('Has a default ether reserve balance in the contract', async() => {
         const reserve = await vendingMachine.methods.getReserveAmount().call({ from: accounts[0] });
         assert.equal(web3.utils.toWei('1', 'ether'), reserve);
     });
 
-    it('It allow a user to deposit at least minimum amount', async()=> {
+    it('Allow a user to deposit at least minimum amount', async()=> {
+        const amountToDeposit = web3.utils.toWei('0.1', 'ether');
+
         await vendingMachine.methods.deposit().send({ 
             from: accounts[1], 
-            value: web3.utils.toWei('0.1', 'ether')
+            value: amountToDeposit
         });
 
         const amountDeposited = await vendingMachine.methods.consumersDeposit(accounts[1]).call();
-        assert.equal(web3.utils.toWei('0.1', 'ether'), amountDeposited);
+        assert.equal(amountToDeposit, amountDeposited);
     });
 
-    it('It allow multiple users to deposit at least minimum amount', async()=> {
+    it('Allow multiple users to deposit at least minimum amount', async()=> {
+        const amountToDepositby2 =  web3.utils.toWei('0.22', 'ether');
+        const amountToDepositby3 =  web3.utils.toWei('0.3', 'ether');
+        
         await vendingMachine.methods.deposit().send({ 
             from: accounts[2], 
-            value: web3.utils.toWei('0.22', 'ether')
+            value: amountToDepositby2
         });
 
         await vendingMachine.methods.deposit().send({ 
             from: accounts[3], 
-            value: web3.utils.toWei('0.3', 'ether')
+            value: amountToDepositby3
         });
 
         const amountDepositedBy2 = await vendingMachine.methods.consumersDeposit(accounts[2]).call();
         const amountDepositedBy3 = await vendingMachine.methods.consumersDeposit(accounts[3]).call();
 
-        assert.equal(web3.utils.toWei('0.22', 'ether'), amountDepositedBy2);
-        assert.equal(web3.utils.toWei('0.3', 'ether'), amountDepositedBy3);
+        assert.equal(amountToDepositby2, amountDepositedBy2);
+        assert.equal(amountToDepositby3, amountDepositedBy3);
     });
 
-    it('It allows a user to deposit and buy peanuts', async() => {
+    it('Allows a user to deposit and buy peanuts', async() => {
+        const amountToDeposit = web3.utils.toWei('0.8', 'ether');
+
         await vendingMachine.methods.deposit().send({ 
             from: accounts[1], 
-            value: web3.utils.toWei('0.8', 'ether')
+            value: amountToDeposit
         });
         
         const amountDeposited = await vendingMachine.methods.consumersDeposit(accounts[1]).call();
         await vendingMachine.methods.getPeanuts(2).send({ from: accounts[1] });        
         const peanutsBought = await vendingMachine.methods.peanuts(accounts[1]).call();
 
-        assert.equal(web3.utils.toWei('0.8', 'ether'), amountDeposited);
+        assert.equal(amountToDeposit, amountDeposited);
         assert.equal(2, peanutsBought);
     });
 
-    it('It allows a user to deposit, buy peanuts and withdraw balance if any', async() => {
+    it('Allows a user to deposit, buy peanuts and withdraw balance if any', async() => {
+        const amountToDeposit = web3.utils.toWei('1', 'ether');
+        const pricePerPeanut = web3.utils.toWei('0.1', 'ether');
+        const peanutsToBuy = 8;
+
         await vendingMachine.methods.deposit().send({ 
             from: accounts[1], 
-            value: web3.utils.toWei('1', 'ether')
+            value: amountToDeposit
         }); 
         const amountDeposited = await vendingMachine.methods.consumersDeposit(accounts[1]).call();
 
-        await vendingMachine.methods.getPeanuts(8).send({ from: accounts[1] });        
+        await vendingMachine.methods.getPeanuts(peanutsToBuy).send({ from: accounts[1] });        
         const peanutsBought = await vendingMachine.methods.peanuts(accounts[1]).call();
         const balanceAfterPurchase = await vendingMachine.methods.consumersDeposit(accounts[1]).call();
 
         await vendingMachine.methods.withdrawal().send({ from: accounts[1] }); 
         const balanceAfterWithdrawal = await vendingMachine.methods.consumersDeposit(accounts[1]).call();
 
-        assert.equal(web3.utils.toWei('1', 'ether'), amountDeposited);
-        assert.equal(8, peanutsBought);
-        //Amount remaining after purchase = 1 ether - (0.1 * 8)ether = 0.2 ether
-        assert.equal(web3.utils.toWei('0.2', 'ether'), balanceAfterPurchase);
+        const expectedBalance = amountToDeposit - (pricePerPeanut * peanutsToBuy);
+
+        assert.equal(amountToDeposit, amountDeposited);
+        assert.equal(peanutsToBuy, peanutsBought);
+        assert.equal(expectedBalance.toString(), balanceAfterPurchase);
         assert.equal(0, balanceAfterWithdrawal);
 
     });
     
+    
+    it('Allows only owner to restock peanuts', async () => {
+        const admin = accounts[0];
+
+        const initialStockValue = await vendingMachine.methods.peanuts(vendingMachine.options.address).call({ from: admin});
+        await vendingMachine.methods.restockPeanuts(10).send({ from: admin });
+        const expectedStockValue = 10 + parseInt(initialStockValue);
+
+        const finalStockValue = await vendingMachine.methods.peanuts(vendingMachine.options.address).call({ from: admin });
+        
+
+        assert.equal(expectedStockValue.toString(), finalStockValue);
+    });
 });
