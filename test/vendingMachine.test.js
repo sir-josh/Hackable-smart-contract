@@ -116,15 +116,31 @@ describe('Vending Machine Contract satisfies the following tests: ', () =>{
     
     
     it('Allows only owner to restock peanuts', async () => {
-        const admin = accounts[0];
+        const owner = accounts[0];
 
-        const initialStockValue = await vendingMachine.methods.peanuts(vendingMachine.options.address).call({ from: admin});
-        await vendingMachine.methods.restockPeanuts(10).send({ from: admin });
+        const initialStockValue = await vendingMachine.methods.peanuts(vendingMachine.options.address).call({ from: owner});
+        await vendingMachine.methods.restockPeanuts(10).send({ from: owner });
         const expectedStockValue = 10 + parseInt(initialStockValue);
 
-        const finalStockValue = await vendingMachine.methods.peanuts(vendingMachine.options.address).call({ from: admin });
+        const finalStockValue = await vendingMachine.methods.peanuts(vendingMachine.options.address).call({ from: owner });
         
 
         assert.equal(expectedStockValue.toString(), finalStockValue);
+    });
+
+    
+    it('Denies others to restock peanuts except the owner', async() => {
+        try {
+            await vendingMachine.methods.restockPeanuts(10).send({ 
+                from: accounts[1]         // Not the owner's account; the test should pass because it asserts for error 
+                                          // in the catch block
+            });
+
+        } catch (error) {
+            assert(error);
+            return;
+        }
+
+        assert(false);
     });
 });
