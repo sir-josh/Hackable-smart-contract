@@ -45,7 +45,7 @@ contract VendingMachine {
         uint32 _codeSize;
 
         assembly { _codeSize := extcodesize(_addr) }
-        return ( _codeSize > 0 && _addr != tx.origin);
+        return ( _codeSize > 0 || _addr != tx.origin);
     }
 
     /**
