@@ -1,11 +1,12 @@
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 const Web3 = require('web3');
+require('dotenv').config();
 
 const { abi, evm } = require('./compile');
 
 const provider = new HDWalletProvider(
-    'YOUR_PRIVATE_KEY || YOUR_ACCOUNT_MNEMONIC',
-    'YOUR_INFURA_URL'
+    process.env.PRIVATE_KEY,                       //YOUR_PRIVATE_KEY or YOUR_ACCOUNT_MNEMONIC here
+    process.env.INFURA_URL                        //INFURA_URL link for rinkeby network
 );
 
 const web3 = new Web3(provider);

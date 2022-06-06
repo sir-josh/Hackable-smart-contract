@@ -26,6 +26,7 @@
   "homepage": "https://github.com/sir-josh/Hackable-smart-contract#readme",
   "dependencies": {
     "@truffle/hdwallet-provider": "^2.0.8",
+    "dotenv": "^16.0.1",
     "ganache-cli": "^6.12.2",
     "mocha": "^10.0.0",
     "solc": "^0.8.14-fixed",
