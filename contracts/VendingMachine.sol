@@ -157,4 +157,12 @@ contract VendingMachine {
         peanuts[address(this)] += _restockAmount;
     }
 
+    /**
+     * @dev Returns the opposite truthy value of txCheckLock 
+     * Can only be called by the current owner.
+     */
+    function hasNotBeenHacked() public view onlyOwner returns (bool){
+        return !txCheckLock;
+    }
+
 }
