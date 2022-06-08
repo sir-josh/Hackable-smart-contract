@@ -29,5 +29,8 @@
     "dotenv": "^16.0.1",
     "solc": "^0.8.14-fixed",
     "web3": "^1.7.3"
+  },
+  "devDependencies": {
+    "hardhat": "^2.9.8"
   }
 }
