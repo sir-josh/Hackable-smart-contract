@@ -13,7 +13,7 @@ async function main() {
         value: web3.utils.toWei('1', 'ether')
     });
   
-    console.log("Token address:", vendingMachine.address);
+    console.log("Contract deployed at address:", vendingMachine.address);
   }
   
   main()
