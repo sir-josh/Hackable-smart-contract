@@ -10,10 +10,10 @@ require("dotenv").config();
 
 module.exports = {
   solidity: "0.8.9",
-  defaultNetwork: "rinkeby",
+  // defaultNetwork: "rinkeby",
   networks: {
     hardhat: {},
-    rinkeby: {
+    goerli: {
       url: INFURA_URL,
       accounts: [PRIVATE_KEY]
     }

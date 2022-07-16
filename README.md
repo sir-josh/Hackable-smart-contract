@@ -7,6 +7,6 @@ Nonetheless there is a bug in the contract. The contract has a reserve balance o
 
 Figure out the bug in the contract and use it to your advantage.
 
-VendingMachine: deployed to: https://rinkeby.etherscan.io/address/0x3a08B9072a271a8D6243d8c734d1d0fE74959C85
+VendingMachine: deployed to: https://goerli.etherscan.io/address/0x00f4b86F1aa30a7434774f6Bc3CEe6435aE78174
 
-Feel to attack.
+Feel free to attack.
